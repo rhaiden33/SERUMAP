@@ -54,8 +54,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}\nbutton
 <section class="panel" id="panel-mapa">
  <div class="grid">
   <article class="card"><h2>Explora las regiones</h2><p class="sub">Selecciona una región para consultar sus plazas y sus reseñas.</p>
-   <div class="map-wrap"><svg id="map" viewBox="0 0 310 420" role="img" aria-label="Mapa esquemático del Perú"></svg></div>
-   <div class="region-list" id="regionChips"></div><p class="hint">Mapa esquemático de regiones con datos del prototipo 2026-I. Selecciona una región para ver sus reseñas.</p>
+   <div class="map-wrap"><svg id="map" viewBox="0 0 310 420" role="img" aria-label="Mapa esquemático del Perú con 25 regiones seleccionables"></svg></div>
+   <div class="region-list" id="regionChips"></div><p class="hint">Mapa esquemático con las 25 regiones del Perú. Selecciona una región para ver sus reseñas; las cifras de plazas solo aparecen donde hay datos del prototipo.</p>
   </article>
   <article class="card" id="regionDetail" aria-live="polite"></article>
  </div>
@@ -111,7 +111,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}\nbutton
 </div>
 <script>
 const TOTAL=7489;
-const regions=[["Cajamarca",484,-78.5,-7.2],["Piura",468,-80.6,-5.2],["Ayacucho",450,-74.2,-13.2],["Apurímac",423,-72.9,-14],["Huancavelica",416,-75,-12.8],["Junín",395,-75.2,-11.5],["La Libertad",387,-78.9,-8.1],["Áncash",381,-77.5,-9.5],["Huánuco",372,-76.2,-9.9],["Cusco",352,-72,-13.5],["Loreto",278,-75,-4.5]];
+const allRegions=["Amazonas","Áncash","Apurímac","Arequipa","Ayacucho","Cajamarca","Callao","Cusco","Huancavelica","Huánuco","Ica","Junín","La Libertad","Lambayeque","Lima","Loreto","Madre de Dios","Moquegua","Pasco","Piura","Puno","San Martín","Tacna","Tumbes","Ucayali"];
+const regionCoords={"Amazonas":[-77.8,-5.6],"Áncash":[-77.5,-9.4],"Apurímac":[-72.9,-14],"Arequipa":[-71.5,-16.4],"Ayacucho":[-74.2,-13.2],"Cajamarca":[-78.5,-7.2],"Callao":[-77.15,-12.05],"Cusco":[-72,-13.5],"Huancavelica":[-75,-12.8],"Huánuco":[-76.2,-9.9],"Ica":[-75.7,-14.1],"Junín":[-75.2,-11.5],"La Libertad":[-78.9,-8.1],"Lambayeque":[-79.9,-6.7],"Lima":[-76.9,-11.9],"Loreto":[-75,-4.5],"Madre de Dios":[-70.5,-12.6],"Moquegua":[-70.9,-17.2],"Pasco":[-75.3,-10.4],"Piura":[-80.6,-5.2],"Puno":[-70,-15.2],"San Martín":[-76.8,-7],"Tacna":[-70.2,-18],"Tumbes":[-80.45,-3.6],"Ucayali":[-73.4,-8.4]};
+const knownPlazas={"Cajamarca":484,"Piura":468,"Ayacucho":450,"Apurímac":423,"Huancavelica":416,"Junín":395,"La Libertad":387,"Áncash":381,"Huánuco":372,"Cusco":352,"Loreto":278};
+const regions=allRegions.map(name=>[name,knownPlazas[name]??null,...regionCoords[name]]);
 const careers=[["Medicina humana",2175],["Enfermería",1792],["Psicología",1237],["Obstetricia",897],["Odontología",595],["Nutrición",220],["Tecnología médica",192],["Farmacia y bioquímica",173],["Biología",118],["Trabajo social",51],["Medicina veterinaria",37],["Ingeniería sanitaria",2]];
 const outline=[[-81,-4.2],[-80.3,-3.4],[-78.5,-4.7],[-77.9,-3],[-75.5,-1.5],[-75.3,-.1],[-73.5,-2.3],[-70,-4.2],[-72.6,-6.5],[-72.8,-8.9],[-70.5,-9.5],[-69.5,-10.9],[-68.7,-12.5],[-69.5,-13.7],[-68.9,-14.5],[-69.1,-16.3],[-69.5,-17.5],[-70.4,-18.3],[-71.5,-17.3],[-75,-15.4],[-76.5,-13.5],[-78,-11],[-79.5,-8.2],[-81,-6],[-81.3,-4.6]];
 const fmt=n=>Math.round(n).toLocaleString("es-PE").replace(/,/g," ");
@@ -120,7 +123,7 @@ let selected="Cajamarca";
 function drawMap(){
  const pts=outline.map(p=>xy(...p).map(n=>n.toFixed(1)).join(",")).join(" ");
  let svg='<rect class="sea" width="310" height="420" rx="12"/><polygon class="land" points="'+pts+'"/>';
- regions.forEach(r=>{const [x,y]=xy(r[2],r[3]),rad=Math.sqrt(r[1])*.95;svg+='<circle class="bubble '+(r[0]===selected?'active':'')+'" cx="'+x+'" cy="'+y+'" r="'+rad+'" data-region="'+r[0]+'" tabindex="0" role="button" aria-label="'+r[0]+', '+r[1]+' plazas"/>';});
+ regions.forEach(r=>{const [x,y]=xy(r[2],r[3]),rad=r[1]===null?5.5:Math.max(6,Math.sqrt(r[1])*.48);svg+='<circle class="bubble '+(r[0]===selected?'active':'')+'" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad.toFixed(1)+'" data-region="'+r[0]+'" tabindex="0" role="button" aria-label="'+r[0]+(r[1]===null?'':' , '+r[1]+' plazas')+'"/>';});
  const map=document.getElementById("map");map.innerHTML=svg;
  map.querySelectorAll(".bubble").forEach(el=>{el.addEventListener("click",()=>pick(el.dataset.region));el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(el.dataset.region)}})});
 }
@@ -130,7 +133,8 @@ function drawRegions(){
 }
 function drawDetail(){
  const index=regions.findIndex(r=>r[0]===selected),r=regions[index];
- document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2><div class="stat">'+fmt(r[1])+'</div><p class="muted">plazas remuneradas</p><p>Equivale al <b>'+(r[1]/TOTAL*100).toFixed(1).replace(".",",")+' %</b> de la oferta nacional indicada y ocupa el puesto <b>'+(index+1)+'</b> entre las '+regions.length+' regiones mostradas.</p><div class="notice">El ranking considera únicamente las 11 regiones incluidas en este prototipo, no todas las regiones del país. Datos históricos 2026-I; verificar contra los anexos oficiales.</div><div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px"><h3>Reseñas de '+r[0]+'</h3><p class="muted" style="font-size:13px">Experiencias compartidas para esta región.</p><div id="mapRegionReviews"></div><button class="btn primary" id="mapWriteReview" style="margin-top:10px">Escribir reseña de '+r[0]+'</button></div>';
+ const plazaInfo=r[1]===null?'<div class="stat">—</div><p class="muted">Plazas: dato no cargado</p><div class="notice">Esta región ya se puede seleccionar y recibir reseñas. La cifra de plazas se mostrará cuando se incorpore una fuente oficial verificable; no se ha estimado.</div>':'<div class="stat">'+fmt(r[1])+'</div><p class="muted">plazas remuneradas · dato histórico del prototipo 2026-I</p><div class="notice">Esta cifra corresponde al prototipo 2026-I y debe verificarse con los anexos oficiales antes de tomar decisiones.</div>';
+ document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2>'+plazaInfo+'<div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px"><h3>Reseñas de '+r[0]+'</h3><p class="muted" style="font-size:13px">Experiencias compartidas para esta región.</p><div id="mapRegionReviews"></div><button class="btn primary" id="mapWriteReview" style="margin-top:10px">Escribir reseña de '+r[0]+'</button></div>';
 }
 function pick(name){selected=name;drawMap();drawRegions();drawDetail();renderMapRegionReviews()}
 document.getElementById("careerBars").innerHTML=careers.map(c=>'<div class="progress-row"><span>'+c[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(c[1]/careers[0][1]*100,1.5)+'%"></div></div><b>'+fmt(c[1])+'</b></div>').join("");
@@ -141,7 +145,6 @@ document.querySelectorAll("#careerChoice button").forEach(b=>b.onclick=()=>{base
 document.querySelectorAll("#zoneChoice button").forEach(b=>b.onclick=()=>{zone=b.dataset.zone;document.querySelectorAll("#zoneChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===b)));document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!=="panel-"+b.dataset.tab);window.scrollTo({top:0,behavior:"smooth"})});
 document.getElementById("themeBtn").onclick=()=>{const root=document.documentElement;const dark=root.dataset.theme!=="dark";root.dataset.theme=dark?"dark":"light";document.getElementById("themeBtn").textContent=dark?"☀":"☾"};
-const allRegions=["Amazonas","Áncash","Apurímac","Arequipa","Ayacucho","Cajamarca","Callao","Cusco","Huancavelica","Huánuco","Ica","Junín","La Libertad","Lambayeque","Lima","Loreto","Madre de Dios","Moquegua","Pasco","Piura","Puno","San Martín","Tacna","Tumbes","Ucayali"];
 document.getElementById("rRegion").innerHTML+=[...allRegions].map(r=>'<option>'+r+'</option>').join("");
 const storageKey="serumap-reviews-v1";
 function loadReviews(){try{return JSON.parse(localStorage.getItem(storageKey)||"[]")}catch{return []}}

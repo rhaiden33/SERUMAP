@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0e5a5c">
 <meta name="description" content="Serumap: explora plazas SERUMS, compara regiones y estima ingresos.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Serumap | Plazas SERUMS</title>
 <style>
 :root{--bg:#eef3f2;--card:#fff;--ink:#10242b;--muted:#53686c;--line:#d3dedc;--teal:#0e5a5c;--soft:#d5e8e6;--gold:#b97a12;--red:#c8372d;--shadow:0 8px 28px #10242b0b}
@@ -158,6 +160,7 @@ document.getElementById("saveReview").onclick=()=>{
  try{localStorage.setItem(storageKey,JSON.stringify(items));form.hidden=true;document.getElementById("rName").value="";document.getElementById("rText").value="";renderReviews()}catch{alert("No se pudo guardar en este navegador.")}
 };
 drawMap();drawRegions();drawDetail();calc();renderReviews();
+if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 </body>
 </html>

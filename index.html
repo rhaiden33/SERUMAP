@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e5a5c">
+<meta name="description" content="Serumap: explora plazas SERUMS, compara regiones y estima ingresos.">
+<title>Serumap | Plazas SERUMS</title>
+<style>
+:root{--bg:#eef3f2;--card:#fff;--ink:#10242b;--muted:#53686c;--line:#d3dedc;--teal:#0e5a5c;--soft:#d5e8e6;--gold:#b97a12;--red:#c8372d;--shadow:0 8px 28px #10242b0b}
+:root[data-theme=dark]{--bg:#0c1b1f;--card:#14292e;--ink:#e6f0ef;--muted:#9db4b6;--line:#274147;--teal:#5fc2bf;--soft:#17383b;--gold:#e8b34d;--red:#ff7468;--shadow:0 8px 28px #0003}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}
+.shell{max-width:1080px;margin:auto;padding:22px 18px 100px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:var(--teal);color:white;display:grid;place-items:center;font-size:24px}
+h1{font-size:30px;line-height:1;margin:0;letter-spacing:-1px}h2{font-size:20px;margin:0 0 8px}h3{font-size:16px;margin:0 0 6px}
+.sub,.muted,.hint{color:var(--muted)}.sub{margin:5px 0 0;font-size:14px}.hint{font-size:12px;margin:9px 0 0}
+.header-actions{display:flex;gap:8px;align-items:center}.pill,.btn,.tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 14px}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:white;font-weight:700}.btn:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.map-wrap{background:var(--soft);border-radius:14px;padding:10px}.map-wrap svg{display:block;width:100%;max-height:470px}
+.land{fill:#bcd5d0;stroke:var(--line);stroke-width:1.5}.sea{fill:transparent}.bubble{fill:var(--teal);fill-opacity:.65;stroke:var(--teal);stroke-width:2;cursor:pointer}.bubble.active{fill:var(--red);stroke:var(--red);fill-opacity:.9}
+.region-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip{border:1px solid var(--line);border-radius:999px;background:var(--card);padding:7px 11px;font-size:13px}.chip.active{background:var(--teal);color:white;border-color:var(--teal)}
+.stat{font-size:42px;font-weight:800;letter-spacing:-2px;line-height:1.1}.stat small{font-size:14px;letter-spacing:0;font-weight:500;color:var(--muted)}
+.progress-row{display:grid;grid-template-columns: minmax(105px,1fr) 2fr 58px;gap:10px;align-items:center;margin:11px 0;font-size:13px}
+.track{height:11px;background:var(--soft);border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--teal);border-radius:20px}
+.tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 16px}.tab{white-space:nowrap}.tab[aria-selected=true]{background:var(--teal);color:white;border-color:var(--teal)}
+.panel[hidden]{display:none!important}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--card);text-align:left}.choice.active{border:2px solid var(--teal);background:var(--soft)}
+.result{background:var(--soft);border-radius:14px;padding:18px;margin-top:14px}.result .stat{font-size:36px}
+label.field{display:block;margin:12px 0}label.field span{display:block;font-weight:650;font-size:13px;margin-bottom:5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}textarea{min-height:90px}
+.review{border-top:1px solid var(--line);padding:13px 0}.stars{color:var(--gold);letter-spacing:2px}.notice{border-left:3px solid var(--gold);padding:8px 12px;background:var(--soft);border-radius:0 10px 10px 0;font-size:12px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+@media(max-width:760px){.shell{padding:16px 13px 95px}.grid{grid-template-columns:1fr}.card{padding:15px}h1{font-size:27px}.stat{font-size:38px}.header-actions .pill{display:none}}
+@media(prefers-reduced-motion:no-preference){button,.card{transition:background .15s,border-color .15s,transform .15s}button:active{transform:scale(.98)}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+ <div class="brand"><div class="logo">✚</div><div><h1>Serumap</h1><p class="sub">Elige tu plaza SERUMS con datos</p></div></div>
+ <div class="header-actions"><span class="pill">Datos 2026-I</span><button class="btn" id="themeBtn" aria-label="Cambiar tema">☾</button></div>
+</header>
+<nav class="tabs" aria-label="Secciones">
+ <button class="tab" data-tab="mapa" aria-selected="true">📍 Mapa</button>
+ <button class="tab" data-tab="plazas" aria-selected="false">📊 Plazas</button>
+ <button class="tab" data-tab="ingreso" aria-selected="false">💰 Ingreso</button>
+ <button class="tab" data-tab="resenas" aria-selected="false">💬 Reseñas</button>
+</nav>
+<main>
+<section class="panel" id="panel-mapa">
+ <div class="grid">
+  <article class="card"><h2>Explora las regiones</h2><p class="sub">Selecciona una burbuja o región para consultar su oferta.</p>
+   <div class="map-wrap"><svg id="map" viewBox="0 0 310 420" role="img" aria-label="Mapa esquemático del Perú"></svg></div>
+   <div class="region-list" id="regionChips"></div><p class="hint">Mapa esquemático; el tamaño de las burbujas representa las plazas listadas.</p>
+  </article>
+  <article class="card" id="regionDetail" aria-live="polite"></article>
+ </div>
+</section>
+<section class="panel" id="panel-plazas" hidden>
+ <div class="grid">
+  <article class="card"><h2>Plazas por carrera</h2><p class="sub">Remuneradas ofertadas en 2026-I · total indicado: 7 489</p><div id="careerBars"></div></article>
+  <article class="card"><h2>Oferta por proceso</h2>
+   <div class="progress-row"><span>2025-II</span><div class="track"><div class="fill" style="width:24%"></div></div><b>3 229</b></div>
+   <div class="progress-row"><span>2026-I</span><div class="track"><div class="fill" style="width:37%"></div></div><b>7 489</b></div>
+   <p class="hint">El prototipo original señala que las plazas remuneradas representaron el 24 % del total en 2025-II y el 37 % en 2026-I.</p>
+   <div class="notice" style="margin-top:18px">Las cifras son las incluidas en el archivo fuente del prototipo. Verifica siempre la convocatoria y los anexos oficiales del proceso correspondiente.</div>
+  </article>
+ </div>
+</section>
+<section class="panel" id="panel-ingreso" hidden>
+ <div class="grid">
+  <article class="card"><h2>Calculadora de ingreso</h2><p class="sub">Selecciona carrera y tipo de zona.</p>
+   <h3 style="margin-top:18px">Carrera</h3><div class="two" id="careerChoice">
+    <button class="choice active" data-base="6624">Medicina humana<br><b>S/ 6 624 base</b></button>
+    <button class="choice" data-base="5300">Otras carreras<br><b>S/ 5 300 base</b></button>
+   </div>
+   <h3 style="margin-top:18px">Tipo de zona</h3><div id="zoneChoice" style="display:grid;gap:8px">
+    <button class="choice active" data-zone="none">Sin bonificación</button>
+    <button class="choice" data-zone="far">Zona alejada o de frontera</button>
+    <button class="choice" data-zone="emer">Zona de emergencia</button>
+   </div>
+  </article>
+  <article class="card"><h2>Ingreso estimado</h2><div class="result"><div class="stat" id="monthly">S/ 6 624</div><span class="muted">al mes (bruto)</span><p style="margin:12px 0 0">En 12 meses: <b id="yearly">S/ 79 488</b></p></div>
+   <p class="notice" style="margin-top:16px">Estimado referencial según los importes incluidos en el prototipo. Las bonificaciones exactas dependen de la plaza y pueden cambiar. No representa una oferta laboral ni garantiza el pago indicado.</p>
+  </article>
+ </div>
+</section>
+<section class="panel" id="panel-resenas" hidden>
+ <div class="grid">
+  <article class="card"><h2>Experiencias en puestos</h2><p class="sub">Comparte información práctica sobre acceso, servicios y condiciones del establecimiento.</p>
+   <div class="notice" style="margin:14px 0">Las reseñas de esta versión se guardan únicamente en este navegador. No se sincronizan entre usuarios ni constituyen información verificada por el Minsa.</div>
+   <button class="btn primary" id="newReview">Escribir una reseña</button>
+   <div id="reviewList" style="margin-top:12px"></div>
+  </article>
+  <article class="card" id="reviewForm" hidden><h2>Nueva reseña</h2>
+   <label class="field"><span>Nombre del puesto o establecimiento</span><input id="rName" maxlength="80" placeholder="Ej.: Puesto de salud San Martín"></label>
+   <label class="field"><span>Región</span><select id="rRegion"><option value="">Elige una región</option></select></label>
+   <label class="field"><span>Categoría (opcional)</span><select id="rCat"><option value="">No sé</option><option>I-1</option><option>I-2</option><option>I-3</option><option>I-4</option></select></label>
+   <label class="field"><span>Calificación</span><select id="rRating"><option value="5">5 estrellas</option><option value="4">4 estrellas</option><option value="3">3 estrellas</option><option value="2">2 estrellas</option><option value="1">1 estrella</option></select></label>
+   <label class="field"><span>Experiencia</span><textarea id="rText" maxlength="800" placeholder="Cómo llegar, tiempo de viaje, vivienda, equipo..."></textarea></label>
+   <button class="btn primary" id="saveReview">Guardar reseña</button> <button class="btn" id="cancelReview">Cancelar</button>
+  </article>
+ </div>
+</section>
+</main>
+<footer>Serumap es un prototipo independiente y no es una aplicación oficial del Ministerio de Salud.</footer>
+</div>
+<script>
+const TOTAL=7489;
+const regions=[["Cajamarca",484,-78.5,-7.2],["Piura",468,-80.6,-5.2],["Ayacucho",450,-74.2,-13.2],["Apurímac",423,-72.9,-14],["Huancavelica",416,-75,-12.8],["Junín",395,-75.2,-11.5],["La Libertad",387,-78.9,-8.1],["Áncash",381,-77.5,-9.5],["Huánuco",372,-76.2,-9.9],["Cusco",352,-72,-13.5],["Loreto",278,-75,-4.5]];
+const careers=[["Medicina humana",2175],["Enfermería",1792],["Psicología",1237],["Obstetricia",897],["Odontología",595],["Nutrición",220],["Tecnología médica",192],["Farmacia y bioquímica",173],["Biología",118],["Trabajo social",51],["Medicina veterinaria",37],["Ingeniería sanitaria",2]];
+const outline=[[-81,-4.2],[-80.3,-3.4],[-78.5,-4.7],[-77.9,-3],[-75.5,-1.5],[-75.3,-.1],[-73.5,-2.3],[-70,-4.2],[-72.6,-6.5],[-72.8,-8.9],[-70.5,-9.5],[-69.5,-10.9],[-68.7,-12.5],[-69.5,-13.7],[-68.9,-14.5],[-69.1,-16.3],[-69.5,-17.5],[-70.4,-18.3],[-71.5,-17.3],[-75,-15.4],[-76.5,-13.5],[-78,-11],[-79.5,-8.2],[-81,-6],[-81.3,-4.6]];
+const fmt=n=>Math.round(n).toLocaleString("es-PE").replace(/,/g," ");
+const xy=(lon,lat)=>[(lon+82)*22,-lat*22+4];
+let selected="Cajamarca";
+function drawMap(){
+ const pts=outline.map(p=>xy(...p).map(n=>n.toFixed(1)).join(",")).join(" ");
+ let svg='<rect class="sea" width="310" height="420" rx="12"/><polygon class="land" points="'+pts+'"/>';
+ regions.forEach(r=>{const [x,y]=xy(r[2],r[3]),rad=Math.sqrt(r[1])*.95;svg+='<circle class="bubble '+(r[0]===selected?'active':'')+'" cx="'+x+'" cy="'+y+'" r="'+rad+'" data-region="'+r[0]+'" tabindex="0" role="button" aria-label="'+r[0]+', '+r[1]+' plazas"/>';});
+ const map=document.getElementById("map");map.innerHTML=svg;
+ map.querySelectorAll(".bubble").forEach(el=>{el.addEventListener("click",()=>pick(el.dataset.region));el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(el.dataset.region)}})});
+}
+function drawRegions(){
+ document.getElementById("regionChips").innerHTML=regions.map(r=>'<button class="chip '+(r[0]===selected?'active':'')+'" data-region="'+r[0]+'">'+r[0]+'</button>').join("");
+ document.querySelectorAll("#regionChips button").forEach(b=>b.onclick=()=>pick(b.dataset.region));
+}
+function drawDetail(){
+ const index=regions.findIndex(r=>r[0]===selected),r=regions[index];
+ document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2><div class="stat">'+fmt(r[1])+'</div><p class="muted">plazas remuneradas</p><p>Equivale al <b>'+(r[1]/TOTAL*100).toFixed(1).replace(".",",")+' %</b> de la oferta nacional indicada y ocupa el puesto <b>'+(index+1)+'</b> entre las '+regions.length+' regiones mostradas.</p><div class="notice">El ranking considera únicamente las regiones incluidas en este prototipo, no todas las regiones del país.</div>';
+}
+function pick(name){selected=name;drawMap();drawRegions();drawDetail()}
+document.getElementById("careerBars").innerHTML=careers.map(c=>'<div class="progress-row"><span>'+c[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(c[1]/careers[0][1]*100,1.5)+'%"></div></div><b>'+fmt(c[1])+'</b></div>').join("");
+let base=6624,zone="none";
+const bonus={med:{none:0,far:1850,emer:1200},other:{none:0,far:1350,emer:1200}};
+function calc(){const kind=base===6624?"med":"other",total=base+bonus[kind][zone];document.getElementById("monthly").textContent="S/ "+fmt(total);document.getElementById("yearly").textContent="S/ "+fmt(total*12)}
+document.querySelectorAll("#careerChoice button").forEach(b=>b.onclick=()=>{base=Number(b.dataset.base);document.querySelectorAll("#careerChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
+document.querySelectorAll("#zoneChoice button").forEach(b=>b.onclick=()=>{zone=b.dataset.zone;document.querySelectorAll("#zoneChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===b)));document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!=="panel-"+b.dataset.tab);window.scrollTo({top:0,behavior:"smooth"})});
+document.getElementById("themeBtn").onclick=()=>{const root=document.documentElement;const dark=root.dataset.theme!=="dark";root.dataset.theme=dark?"dark":"light";document.getElementById("themeBtn").textContent=dark?"☀":"☾"};
+const allRegions=["Amazonas","Áncash","Apurímac","Arequipa","Ayacucho","Cajamarca","Callao","Cusco","Huancavelica","Huánuco","Ica","Junín","La Libertad","Lambayeque","Lima","Loreto","Madre de Dios","Moquegua","Pasco","Piura","Puno","San Martín","Tacna","Tumbes","Ucayali"];
+document.getElementById("rRegion").innerHTML+=[...allRegions].map(r=>'<option>'+r+'</option>').join("");
+const storageKey="serumap-reviews-v1";
+function loadReviews(){try{return JSON.parse(localStorage.getItem(storageKey)||"[]")}catch{return []}}
+function renderReviews(){
+ const items=loadReviews(),target=document.getElementById("reviewList");
+ target.innerHTML=items.length?items.slice().reverse().map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="muted">'+escapeHtml(r.region)+(r.cat?' · '+escapeHtml(r.cat):'')+'</div><div class="stars">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">Aún no hay reseñas guardadas en este navegador.</p>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const form=document.getElementById("reviewForm");
+document.getElementById("newReview").onclick=()=>{form.hidden=false;document.getElementById("rName").focus()};
+document.getElementById("cancelReview").onclick=()=>{form.hidden=true};
+document.getElementById("saveReview").onclick=()=>{
+ const name=document.getElementById("rName").value.trim(),region=document.getElementById("rRegion").value,rating=Number(document.getElementById("rRating").value);
+ if(!name||!region){alert("Completa el nombre del puesto y la región.");return}
+ const items=loadReviews();items.push({name,region,cat:document.getElementById("rCat").value,rating,text:document.getElementById("rText").value.trim(),date:Date.now()});
+ try{localStorage.setItem(storageKey,JSON.stringify(items));form.hidden=true;document.getElementById("rName").value="";document.getElementById("rText").value="";renderReviews()}catch{alert("No se pudo guardar en este navegador.")}
+};
+drawMap();drawRegions();drawDetail();calc();renderReviews();
+</script>
+</body>
+</html>

@@ -33,7 +33,7 @@ h1{font-size:30px;line-height:1;margin:0;letter-spacing:-1px}h2{font-size:20px;m
 label.field{display:block;margin:12px 0}label.field span{display:block;font-weight:650;font-size:13px;margin-bottom:5px}
 input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}textarea{min-height:90px}
 .review{border-top:1px solid var(--line);padding:13px 0}.stars{color:var(--gold);letter-spacing:2px}.notice{border-left:3px solid var(--gold);padding:8px 12px;background:var(--soft);border-radius:0 10px 10px 0;font-size:12px;color:var(--muted)}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}\nbutton:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}\na{color:var(--teal);text-underline-offset:3px}
 @media(max-width:760px){.shell{padding:16px 13px 95px}.grid{grid-template-columns:1fr}.card{padding:15px}h1{font-size:27px}.stat{font-size:38px}.header-actions .pill{display:none}}
 @media(prefers-reduced-motion:no-preference){button,.card{transition:background .15s,border-color .15s,transform .15s}button:active{transform:scale(.98)}}
 </style>
@@ -42,7 +42,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
 <div class="shell">
 <header>
  <div class="brand"><div class="logo">✚</div><div><h1>Serumap</h1><p class="sub">Elige tu plaza SERUMS con datos</p></div></div>
- <div class="header-actions"><span class="pill">Datos 2026-I</span><button class="btn" id="themeBtn" aria-label="Cambiar tema">☾</button></div>
+ <div class="header-actions"><span class="pill">Datos históricos 2026-I</span><button class="btn" id="themeBtn" aria-label="Cambiar tema">☾</button></div>
 </header>
 <nav class="tabs" aria-label="Secciones">
  <button class="tab" data-tab="mapa" aria-selected="true">📍 Mapa</button>
@@ -55,19 +55,19 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
  <div class="grid">
   <article class="card"><h2>Explora las regiones</h2><p class="sub">Selecciona una burbuja o región para consultar su oferta.</p>
    <div class="map-wrap"><svg id="map" viewBox="0 0 310 420" role="img" aria-label="Mapa esquemático del Perú"></svg></div>
-   <div class="region-list" id="regionChips"></div><p class="hint">Mapa esquemático; el tamaño de las burbujas representa las plazas listadas.</p>
+   <div class="region-list" id="regionChips"></div><p class="hint">Mapa esquemático con 11 regiones seleccionadas. No representa la distribución nacional completa; las cifras corresponden al prototipo 2026-I.</p>
   </article>
   <article class="card" id="regionDetail" aria-live="polite"></article>
  </div>
 </section>
 <section class="panel" id="panel-plazas" hidden>
  <div class="grid">
-  <article class="card"><h2>Plazas por carrera</h2><p class="sub">Remuneradas ofertadas en 2026-I · total indicado: 7 489</p><div id="careerBars"></div></article>
+  <article class="card"><h2>Plazas por carrera</h2><p class="sub">Datos históricos del proceso 2026-I · total indicado: 7 489 plazas remuneradas</p><div id="careerBars"></div></article>
   <article class="card"><h2>Oferta por proceso</h2>
    <div class="progress-row"><span>2025-II</span><div class="track"><div class="fill" style="width:24%"></div></div><b>3 229</b></div>
    <div class="progress-row"><span>2026-I</span><div class="track"><div class="fill" style="width:37%"></div></div><b>7 489</b></div>
-   <p class="hint">El prototipo original señala que las plazas remuneradas representaron el 24 % del total en 2025-II y el 37 % en 2026-I.</p>
-   <div class="notice" style="margin-top:18px">Las cifras son las incluidas en el archivo fuente del prototipo. Verifica siempre la convocatoria y los anexos oficiales del proceso correspondiente.</div>
+   <p class="hint">El prototipo original registra 3 229 plazas para 2025-II y 7 489 para 2026-I. Los porcentajes (24 % y 37 %) también proceden del archivo original; no se han recalculado con una oferta oficial completa.</p>
+   <div class="notice" style="margin-top:18px">Estas cifras no representan la convocatoria vigente 2026-II. Antes de elegir una plaza, revisa los anexos oficiales del proceso que te corresponde.</div><p style="margin-top:14px"><b>Fuentes para verificar convocatorias</b></p><p><a href="https://www.gob.pe/institucion/minsa/informes-publicaciones/8040039-oferta-de-plazas-serums-remuneradas-y-equivalentes-2026-i" target="_blank" rel="noopener noreferrer">MINSA: oferta oficial de plazas 2026-I</a></p><p><a href="https://www.geresaloreto.gob.pe/Serums.php" target="_blank" rel="noopener noreferrer">GERESA Loreto: publicaciones SERUMS, incluido 2026-II</a></p>
   </article>
  </div>
 </section>
@@ -85,7 +85,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
    </div>
   </article>
   <article class="card"><h2>Ingreso estimado</h2><div class="result"><div class="stat" id="monthly">S/ 6 624</div><span class="muted">al mes (bruto)</span><p style="margin:12px 0 0">En 12 meses: <b id="yearly">S/ 79 488</b></p></div>
-   <p class="notice" style="margin-top:16px">Estimado referencial según los importes incluidos en el prototipo. Las bonificaciones exactas dependen de la plaza y pueden cambiar. No representa una oferta laboral ni garantiza el pago indicado.</p>
+   <p class="notice" style="margin-top:16px">Los importes y bonificaciones provienen del prototipo original y no han sido verificados para 2026-II. Las condiciones varían según institución, plaza y normativa aplicable. No uses este cálculo para comparar ofertas ni como promesa de pago; confirma el monto en el anexo oficial de la plaza.</p>
   </article>
  </div>
 </section>
@@ -130,7 +130,7 @@ function drawRegions(){
 }
 function drawDetail(){
  const index=regions.findIndex(r=>r[0]===selected),r=regions[index];
- document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2><div class="stat">'+fmt(r[1])+'</div><p class="muted">plazas remuneradas</p><p>Equivale al <b>'+(r[1]/TOTAL*100).toFixed(1).replace(".",",")+' %</b> de la oferta nacional indicada y ocupa el puesto <b>'+(index+1)+'</b> entre las '+regions.length+' regiones mostradas.</p><div class="notice">El ranking considera únicamente las regiones incluidas en este prototipo, no todas las regiones del país.</div>';
+ document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2><div class="stat">'+fmt(r[1])+'</div><p class="muted">plazas remuneradas</p><p>Equivale al <b>'+(r[1]/TOTAL*100).toFixed(1).replace(".",",")+' %</b> de la oferta nacional indicada y ocupa el puesto <b>'+(index+1)+'</b> entre las '+regions.length+' regiones mostradas.</p><div class="notice">El ranking considera únicamente las 11 regiones incluidas en este prototipo, no todas las regiones del país. Datos históricos 2026-I; verificar contra los anexos oficiales.</div>';
 }
 function pick(name){selected=name;drawMap();drawRegions();drawDetail()}
 document.getElementById("careerBars").innerHTML=careers.map(c=>'<div class="progress-row"><span>'+c[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(c[1]/careers[0][1]*100,1.5)+'%"></div></div><b>'+fmt(c[1])+'</b></div>').join("");

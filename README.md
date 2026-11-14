@@ -33,6 +33,7 @@ Las reseñas de esta versión se almacenan en el dispositivo mediante `localStor
 
 - [MINSA: oferta de plazas remuneradas y equivalentes SERUMS 2026-I](https://www.gob.pe/institucion/minsa/informes-publicaciones/8040039-oferta-de-plazas-serums-remuneradas-y-equivalentes-2026-i)
 - [GERESA Loreto: publicaciones y documentos SERUMS, incluido el proceso 2026-II](https://www.geresaloreto.gob.pe/Serums.php)
+- [Oferta oficial de plazas remuneradas SERUMS 2026-II (PDF, 130 páginas)](https://www.geresaloreto.gob.pe/PanelAdministrativo/uploads/serums/serums_uid4_20260819173210_148dba97aa.pdf)
 - [MINSA: convocatoria del proceso de evaluación SERUMS 2026-II](https://www.gob.pe/institucion/minsa/informes-publicaciones/8389144-convocatoria-del-proceso-de-evaluacion-para-el-serums-2026-ii)
 
 Antes de actualizar cifras, descarga y revisa el anexo oficial del proceso y verifica que corresponda a la modalidad (remunerada o equivalente), carrera, institución y fecha.

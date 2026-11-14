@@ -1,0 +1,19 @@
+{
+  "name": "Serumap - Plazas SERUMS",
+  "short_name": "Serumap",
+  "description": "Explora plazas SERUMS, compara regiones y estima ingresos.",
+  "lang": "es-PE",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3f2",
+  "theme_color": "#0e5a5c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

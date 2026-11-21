@@ -27,13 +27,15 @@ h1{font-size:30px;line-height:1;margin:0;letter-spacing:-1px}h2{font-size:20px;m
 .stat{font-size:42px;font-weight:800;letter-spacing:-2px;line-height:1.1}.stat small{font-size:14px;letter-spacing:0;font-weight:500;color:var(--muted)}
 .progress-row{display:grid;grid-template-columns: minmax(105px,1fr) 2fr 58px;gap:10px;align-items:center;margin:11px 0;font-size:13px}
 .track{height:11px;background:var(--soft);border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--teal);border-radius:20px}
-.tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 16px}.tab{white-space:nowrap}.tab[aria-selected=true]{background:var(--teal);color:white;border-color:var(--teal)}
+.tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 16px}.tab{white-space:nowrap}.tab[aria-pressed=true]{background:var(--teal);color:white;border-color:var(--teal)}
 .panel[hidden]{display:none!important}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--card);text-align:left}.choice.active{border:2px solid var(--teal);background:var(--soft)}
 .result{background:var(--soft);border-radius:14px;padding:18px;margin-top:14px}.result .stat{font-size:36px}
 label.field{display:block;margin:12px 0}label.field span{display:block;font-weight:650;font-size:13px;margin-bottom:5px}
 input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}textarea{min-height:90px}
 .review{border-top:1px solid var(--line);padding:13px 0}.stars{color:var(--gold);letter-spacing:2px}.notice{border-left:3px solid var(--gold);padding:8px 12px;background:var(--soft);border-radius:0 10px 10px 0;font-size:12px;color:var(--muted)}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}\nbutton:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}\na{color:var(--teal);text-underline-offset:3px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.bubble:focus-visible{stroke:var(--gold);stroke-width:4;outline:none}\na{color:var(--teal);text-underline-offset:3px}
 @media(max-width:760px){.shell{padding:16px 13px 95px}.grid{grid-template-columns:1fr}.card{padding:15px}h1{font-size:27px}.stat{font-size:38px}.header-actions .pill{display:none}}
 @media(prefers-reduced-motion:no-preference){button,.card{transition:background .15s,border-color .15s,transform .15s}button:active{transform:scale(.98)}}
 </style>
@@ -45,16 +47,16 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}\nbutton
  <div class="header-actions"><span class="pill">Datos históricos 2026-I</span><button class="btn" id="themeBtn" aria-label="Cambiar tema">☾</button></div>
 </header>
 <nav class="tabs" aria-label="Secciones">
- <button class="tab" data-tab="mapa" aria-selected="true">📍 Mapa</button>
- <button class="tab" data-tab="plazas" aria-selected="false">📊 Plazas</button>
- <button class="tab" data-tab="ingreso" aria-selected="false">💰 Ingreso</button>
- <button class="tab" data-tab="resenas" aria-selected="false">💬 Reseñas</button>
+ <button class="tab" data-tab="mapa" aria-controls="panel-mapa" aria-pressed="true">📍 Mapa</button>
+ <button class="tab" data-tab="plazas" aria-controls="panel-plazas" aria-pressed="false">📊 Plazas</button>
+ <button class="tab" data-tab="ingreso" aria-controls="panel-ingreso" aria-pressed="false">💰 Ingreso</button>
+ <button class="tab" data-tab="resenas" aria-controls="panel-resenas" aria-pressed="false">💬 Reseñas</button>
 </nav>
 <main>
 <section class="panel" id="panel-mapa">
  <div class="grid">
   <article class="card"><h2>Explora las regiones</h2><p class="sub">Selecciona una región para consultar sus plazas y sus reseñas.</p>
-   <div class="map-wrap"><svg id="map" viewBox="0 0 310 420" role="img" aria-label="Mapa esquemático del Perú con 25 regiones seleccionables"></svg></div>
+   <div class="map-wrap"><svg id="map" viewBox="0 0 310 420" role="group" aria-label="Mapa esquemático del Perú. Usa los marcadores para seleccionar una región."></svg></div>
    <div class="region-list" id="regionChips"></div><p class="hint">Mapa esquemático con las 25 regiones del Perú. Selecciona una región para ver sus reseñas; las cifras de plazas solo aparecen donde hay datos del prototipo.</p>
   </article>
   <article class="card" id="regionDetail" aria-live="polite"></article>
@@ -66,7 +68,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}\nbutton
   <article class="card"><h2>Oferta por proceso</h2>
    <div class="progress-row"><span>2025-II</span><div class="track"><div class="fill" style="width:24%"></div></div><b>3 229</b></div>
    <div class="progress-row"><span>2026-I</span><div class="track"><div class="fill" style="width:37%"></div></div><b>7 489</b></div>
-   <p class="hint">El prototipo original registra 3 229 plazas para 2025-II y 7 489 para 2026-I. Los porcentajes (24 % y 37 %) también proceden del archivo original; no se han recalculado con una oferta oficial completa.</p>
+   <p class="hint">La cifra de 2025-II (3 229) y su porcentaje son heredados del prototipo y no se han contrastado aquí con un anexo oficial. La cifra de 2026-I (7 489) sí coincide con la oferta publicada por el Minsa. No interpretes esta gráfica como una serie oficial comparable.</p>
    <div class="notice" style="margin-top:18px">Estas cifras no representan la convocatoria vigente 2026-II. Antes de elegir una plaza, revisa los anexos oficiales del proceso que te corresponde.</div><p style="margin-top:14px"><b>Fuentes para verificar convocatorias</b></p><p><a href="https://www.gob.pe/institucion/minsa/informes-publicaciones/8040039-oferta-de-plazas-serums-remuneradas-y-equivalentes-2026-i" target="_blank" rel="noopener noreferrer">MINSA: oferta oficial de plazas 2026-I</a></p><p><a href="https://www.geresaloreto.gob.pe/Serums.php" target="_blank" rel="noopener noreferrer">GERESA Loreto: publicaciones SERUMS, incluido 2026-II</a></p><p><a href="https://www.geresaloreto.gob.pe/PanelAdministrativo/uploads/serums/serums_uid4_20260819173210_148dba97aa.pdf" target="_blank" rel="noopener noreferrer">Oferta oficial de plazas remuneradas SERUMS 2026-II (PDF)</a></p>
   </article>
  </div>
@@ -123,12 +125,12 @@ let selected="Cajamarca";
 function drawMap(){
  const pts=outline.map(p=>xy(...p).map(n=>n.toFixed(1)).join(",")).join(" ");
  let svg='<rect class="sea" width="310" height="420" rx="12"/><polygon class="land" points="'+pts+'"/>';
- regions.forEach(r=>{const [x,y]=xy(r[2],r[3]),rad=r[1]===null?5.5:Math.max(6,Math.sqrt(r[1])*.48);svg+='<circle class="bubble '+(r[0]===selected?'active':'')+'" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad.toFixed(1)+'" data-region="'+r[0]+'" tabindex="0" role="button" aria-label="'+r[0]+(r[1]===null?'':' , '+r[1]+' plazas')+'"/>';});
+ regions.forEach(r=>{const [x,y]=xy(r[2],r[3]),rad=r[1]===null?5.5:Math.max(6,Math.sqrt(r[1])*.48),label=r[1]===null?"sin cifra de plazas cargada":r[1]+" plazas históricas 2026-I";svg+='<circle class="bubble '+(r[0]===selected?'active':'')+'" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad.toFixed(1)+'" data-region="'+r[0]+'" tabindex="0" focusable="true" role="button" aria-pressed="'+(r[0]===selected)+'" aria-label="Seleccionar '+r[0]+': '+label+'"/>';});
  const map=document.getElementById("map");map.innerHTML=svg;
  map.querySelectorAll(".bubble").forEach(el=>{el.addEventListener("click",()=>pick(el.dataset.region));el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(el.dataset.region)}})});
 }
 function drawRegions(){
- document.getElementById("regionChips").innerHTML=regions.map(r=>'<button class="chip '+(r[0]===selected?'active':'')+'" data-region="'+r[0]+'">'+r[0]+'</button>').join("");
+ document.getElementById("regionChips").innerHTML=regions.map(r=>'<button class="chip '+(r[0]===selected?'active':'')+'" data-region="'+r[0]+'" aria-pressed="'+(r[0]===selected)+'">'+r[0]+'</button>').join("");
  document.querySelectorAll("#regionChips button").forEach(b=>b.onclick=()=>pick(b.dataset.region));
 }
 function drawDetail(){
@@ -143,11 +145,24 @@ const bonus={med:{none:0,far:1850,emer:1200},other:{none:0,far:1350,emer:1200}};
 function calc(){const kind=base===6624?"med":"other",total=base+bonus[kind][zone];document.getElementById("monthly").textContent="S/ "+fmt(total);document.getElementById("yearly").textContent="S/ "+fmt(total*12)}
 document.querySelectorAll("#careerChoice button").forEach(b=>b.onclick=()=>{base=Number(b.dataset.base);document.querySelectorAll("#careerChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
 document.querySelectorAll("#zoneChoice button").forEach(b=>b.onclick=()=>{zone=b.dataset.zone;document.querySelectorAll("#zoneChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===b)));document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!=="panel-"+b.dataset.tab);window.scrollTo({top:0,behavior:"smooth"})});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!=="panel-"+b.dataset.tab);const reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;window.scrollTo({top:0,behavior:reduceMotion?"auto":"smooth"})});
 document.getElementById("themeBtn").onclick=()=>{const root=document.documentElement;const dark=root.dataset.theme!=="dark";root.dataset.theme=dark?"dark":"light";document.getElementById("themeBtn").textContent=dark?"☀":"☾"};
 document.getElementById("rRegion").innerHTML+=[...allRegions].map(r=>'<option>'+r+'</option>').join("");
 const storageKey="serumap-reviews-v1";
-function loadReviews(){try{return JSON.parse(localStorage.getItem(storageKey)||"[]")}catch{return []}}
+function loadReviews(){
+ try{
+  const stored=JSON.parse(localStorage.getItem(storageKey)||"[]");
+  if(!Array.isArray(stored))return [];
+  return stored.filter(r=>r&&typeof r==="object"&&!Array.isArray(r)).map(r=>({
+   name:typeof r.name==="string"?r.name.slice(0,80):"",
+   region:typeof r.region==="string"?r.region:"",
+   cat:typeof r.cat==="string"?r.cat.slice(0,20):"",
+   rating:Number(r.rating),
+   text:typeof r.text==="string"?r.text.slice(0,800):"",
+   date:Number(r.date)
+  })).filter(r=>r.name.trim()&&allRegions.includes(r.region)&&Number.isInteger(r.rating)&&r.rating>=1&&r.rating<=5&&Number.isFinite(r.date)&&r.date>0);
+ }catch{return []}
+}
 function renderReviews(){
  const items=loadReviews(),target=document.getElementById("reviewList"),filter=document.getElementById("reviewFilter")?.value||"";
  const visible=filter?items.filter(r=>r.region===filter):items;
@@ -168,9 +183,9 @@ document.getElementById("reviewFilter").onchange=renderReviews;
 document.getElementById("cancelReview").onclick=()=>{form.hidden=true};
 document.getElementById("saveReview").onclick=()=>{
  const name=document.getElementById("rName").value.trim(),region=document.getElementById("rRegion").value,rating=Number(document.getElementById("rRating").value);
- if(!name||!region){alert("Completa el nombre del puesto y la región.");return}
+ if(!name||!allRegions.includes(region)||!Number.isInteger(rating)||rating<1||rating>5){alert("Completa el nombre del puesto, elige una región válida y verifica la calificación.");return}
  const items=loadReviews();items.push({name,region,cat:document.getElementById("rCat").value,rating,text:document.getElementById("rText").value.trim(),date:Date.now()});
- try{localStorage.setItem(storageKey,JSON.stringify(items));form.hidden=true;document.getElementById("rName").value="";document.getElementById("rText").value="";renderReviews();renderMapRegionReviews();drawDetail()}catch{alert("No se pudo guardar en este navegador.")}
+ try{localStorage.setItem(storageKey,JSON.stringify(items));form.hidden=true;document.getElementById("rName").value="";document.getElementById("rText").value="";renderReviews();drawDetail();renderMapRegionReviews()}catch{alert("No se pudo guardar en este navegador.")}
 };
 drawMap();drawRegions();drawDetail();calc();renderReviews();renderMapRegionReviews();
 if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));

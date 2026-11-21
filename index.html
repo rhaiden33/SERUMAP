@@ -33,6 +33,19 @@ h1{font-size:30px;line-height:1;margin:0;letter-spacing:-1px}h2{font-size:20px;m
 label.field{display:block;margin:12px 0}label.field span{display:block;font-weight:650;font-size:13px;margin-bottom:5px}
 input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}textarea{min-height:90px}
 .review{border-top:1px solid var(--line);padding:13px 0}.stars{color:var(--gold);letter-spacing:2px}.notice{border-left:3px solid var(--gold);padding:8px 12px;background:var(--soft);border-radius:0 10px 10px 0;font-size:12px;color:var(--muted)}
+.serums-breakdown{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.serums-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.serums-head h3{margin-bottom:3px}.serums-head p{font-size:12px;margin:0}
+.sample-tag{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted);white-space:nowrap}
+.serums-counts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:13px 0}
+.serums-count{display:flex;align-items:center;gap:9px;padding:10px;border-radius:11px;background:var(--bg);border:1px solid var(--line)}
+.serums-count b{font-size:25px;line-height:1}.serums-count span{font-size:12px;font-weight:650}
+.serums-count.no-bonus b{color:#16a34a}.serums-count.zaf b{color:#6b7280}.serums-count.ze b,.serums-count.both b{color:var(--red)}
+.serums-list{display:grid;gap:7px;margin-top:12px}
+.serums-item{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px 10px;border:1px solid var(--line);border-radius:10px}
+.serums-item b{display:block;font-size:13px}.serums-item small{display:block;color:var(--muted);font-size:11px}.serums-item strong{font-size:11px;white-space:nowrap}
+.zone-dot{width:9px;height:9px;border-radius:50%}.zone-dot.no-bonus{background:#16a34a}.zone-dot.zaf{background:#6b7280}.zone-dot.ze,.zone-dot.both{background:#dc2626}
+
 footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .bubble:focus-visible{stroke:var(--gold);stroke-width:4;outline:none}\na{color:var(--teal);text-underline-offset:3px}
@@ -134,7 +147,25 @@ function drawRegions(){
 function drawDetail(){
  const index=regions.findIndex(r=>r[0]===selected),r=regions[index];
  const plazaInfo=r[1]===null?'<div class="stat">—</div><p class="muted">Plazas: dato no cargado</p><div class="notice">Esta región ya se puede seleccionar y recibir reseñas. La cifra de plazas se mostrará cuando se incorpore una fuente oficial verificable; no se ha estimado.</div>':'<div class="stat">'+fmt(r[1])+'</div><p class="muted">plazas remuneradas · dato histórico del prototipo 2026-I</p><div class="notice">Dato heredado del prototipo 2026-I: no ha sido conciliado individualmente con el anexo oficial. No lo uses para comparar regiones ni elegir una plaza.</div>';
- document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2>'+plazaInfo+'<div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px"><h3>Reseñas de '+r[0]+'</h3><p class="muted" style="font-size:13px">Experiencias compartidas para esta región.</p><div id="mapRegionReviews"></div><button class="btn primary" id="mapWriteReview" style="margin-top:10px">Escribir reseña de '+r[0]+'</button></div>';
+ const cuscoSample = r[0]==="Cusco" ? `
+ <section class="serums-breakdown" aria-label="Ejemplo de clasificación de plazas SERUMS en Cusco">
+  <div class="serums-head"><div><h3>Bonificaciones por establecimiento</h3><p class="muted">Ejemplo de registros identificados en la oferta 2026-II</p></div><span class="sample-tag">Muestra: 4 plazas</span></div>
+  <div class="serums-counts">
+   <div class="serums-count no-bonus"><b>1</b><span>Sin bonificación</span></div>
+   <div class="serums-count zaf"><b>1</b><span>Alejadas / frontera</span></div>
+   <div class="serums-count ze"><b>1</b><span>Emergencia</span></div>
+   <div class="serums-count both"><b>1</b><span>Ambas</span></div>
+  </div>
+  <p class="hint">Estos cuatro registros son una muestra ilustrativa, no el total de plazas ni de establecimientos de Cusco. Una misma región puede contener las cuatro categorías.</p>
+  <div class="serums-list">
+   <div class="serums-item"><span class="zone-dot no-bonus"></span><div><b>HUARAN</b><small>Calca · Medicina humana</small></div><strong>Sin bono</strong></div>
+   <div class="serums-item"><span class="zone-dot zaf"></span><div><b>QUESQUENTO</b><small>Calca · Obstetricia</small></div><strong>ZAF</strong></div>
+   <div class="serums-item"><span class="zone-dot ze"></span><div><b>OMAYA</b><small>Pichari · Medicina humana</small></div><strong>ZE</strong></div>
+   <div class="serums-item"><span class="zone-dot both"></span><div><b>KIRIGUETI</b><small>Megantoni · Medicina humana</small></div><strong>ZAF + ZE</strong></div>
+  </div>
+  <p class="hint">ZAF = zona alejada o de frontera · ZE = zona de emergencia. Verifica los indicadores y el establecimiento en el anexo oficial antes de postular.</p>
+ </section>` : "";
+ document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2>'+plazaInfo+cuscoSample+'<div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px"><h3>Reseñas de '+r[0]+'</h3><p class="muted" style="font-size:13px">Experiencias compartidas para esta región.</p><div id="mapRegionReviews"></div><button class="btn primary" id="mapWriteReview" style="margin-top:10px">Escribir reseña de '+r[0]+'</button></div>';
 }
 function pick(name){selected=name;drawMap();drawRegions();drawDetail();renderMapRegionReviews()}
 document.getElementById("careerBars").innerHTML=careers.map(c=>'<div class="progress-row"><span>'+c[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(c[1]/careers[0][1]*100,1.5)+'%"></div></div><b>'+fmt(c[1])+'</b></div>').join("");

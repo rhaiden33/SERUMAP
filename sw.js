@@ -1,4 +1,4 @@
-const CACHE_NAME = "serumap-v2";
+const CACHE_NAME = "serumap-v3";
 const APP_SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {
@@ -30,11 +30,12 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
-          }
-          return response;
+          if (!response.ok) return response;
+          const copy = response.clone();
+          return caches.open(CACHE_NAME)
+            .then(cache => cache.put("./index.html", copy))
+            .catch(() => {})
+            .then(() => response);
         })
         .catch(() => caches.match("./index.html"))
     );
@@ -43,13 +44,18 @@ self.addEventListener("fetch", event => {
 
   event.respondWith(
     caches.match(request).then(cached => {
-      const networkUpdate = fetch(request).then(response => {
-        if (response.ok) {
+      const networkUpdate = fetch(request)
+        .then(response => {
+          if (!response.ok) return response;
           const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-        }
-        return response;
-      });
+          return caches.open(CACHE_NAME)
+            .then(cache => cache.put(request, copy))
+            .then(() => response);
+        })
+        .catch(error => {
+          if (cached) return cached;
+          throw error;
+        });
       return cached || networkUpdate;
     })
   );

@@ -17,7 +17,7 @@ Abre `index.html` en un navegador. Para probar la instalación PWA y el modo sin
 
 ## Funciones
 
-- Mapa esquemático con selección de regiones.
+- Mapa esquemático con las 25 regiones seleccionables; las cifras regionales solo están cargadas para 11 regiones del prototipo.
 - Distribución de plazas por carrera.
 - Calculadora referencial de ingresos.
 - Reseñas guardadas localmente en el navegador.
@@ -25,13 +25,14 @@ Abre `index.html` en un navegador. Para probar la instalación PWA y el modo sin
 
 ## Importante
 
-Serumap es un prototipo independiente y no es una aplicación oficial del Ministerio de Salud. Los datos de plazas corresponden al prototipo del proceso 2026-I y no deben interpretarse como oferta vigente 2026-II. La calculadora conserva importes de referencia del prototipo que no han sido validados para el proceso actual; no debe usarse para estimar una remuneración real.
+Serumap es un prototipo independiente y no es una aplicación oficial del Ministerio de Salud. El total de 7 489 plazas remuneradas y la distribución por carrera de 2026-I coinciden con la comunicación oficial del Minsa. Las 11 cifras regionales y la cifra comparativa de 2025-II (3 229) son datos heredados del prototipo que no se han conciliado individualmente con los anexos oficiales; no deben usarse para comparar regiones ni elegir una plaza. El documento oficial de oferta remunerada 2026-II está enlazado abajo, pero sus cifras todavía no se han importado a las visualizaciones. La calculadora conserva importes de referencia del prototipo que no han sido validados para el proceso actual; no debe usarse para estimar una remuneración real.
 
 Las reseñas de esta versión se almacenan en el dispositivo mediante `localStorage`; no se comparten ni sincronizan entre usuarios. Para reseñas colaborativas se necesita integrar un backend propio con autenticación, base de datos y almacenamiento de imágenes.
 
 ## Fuentes oficiales para verificar convocatorias
 
 - [MINSA: oferta de plazas remuneradas y equivalentes SERUMS 2026-I](https://www.gob.pe/institucion/minsa/informes-publicaciones/8040039-oferta-de-plazas-serums-remuneradas-y-equivalentes-2026-i)
+- [MINSA: adjudicación SERUMS 2026-I, total y distribución de 7 489 plazas remuneradas por carrera (1 de mayo de 2026)](https://www.gob.pe/institucion/minsa/noticias/1386440-minsa-inicio-la-adjudicacion-de-plazas-remuneradas-serums-2026-i)
 - [GERESA Loreto: publicaciones y documentos SERUMS, incluido el proceso 2026-II](https://www.geresaloreto.gob.pe/Serums.php)
 - [Oferta oficial de plazas remuneradas SERUMS 2026-II (PDF, 130 páginas)](https://www.geresaloreto.gob.pe/PanelAdministrativo/uploads/serums/serums_uid4_20260819173210_148dba97aa.pdf)
 - [MINSA: convocatoria del proceso de evaluación SERUMS 2026-II](https://www.gob.pe/institucion/minsa/informes-publicaciones/8389144-convocatoria-del-proceso-de-evaluacion-para-el-serums-2026-ii)

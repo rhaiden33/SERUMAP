@@ -93,14 +93,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <button class="choice active" data-base="6624">Medicina humana<br><b>S/ 6 624 base</b></button>
     <button class="choice" data-base="5300">Otras carreras<br><b>S/ 5 300 base</b></button>
    </div>
-   <h3 style="margin-top:18px">Tipo de zona</h3><div id="zoneChoice" style="display:grid;gap:8px">
-    <button class="choice active" data-zone="none">Sin bonificación</button>
-    <button class="choice" data-zone="far">Zona alejada o de frontera</button>
-    <button class="choice" data-zone="emer">Zona de emergencia</button>
+   <h3 style="margin-top:18px">Bonificaciones de la plaza</h3>
+   <p class="hint">Marca los bonos que figuran en el registro oficial del establecimiento (ZAF y/o ZE).</p>
+   <div id="zoneChoice" style="display:grid;gap:8px">
+    <label class="choice active" style="display:flex;gap:10px;align-items:center"><input id="zafToggle" type="checkbox" style="width:auto"> <span><b>Zona alejada o de frontera (ZAF)</b><br><small class="muted">Monto referencial: S/ 1 480 médicos · S/ 1 100 otras profesiones</small></span></label>
+    <label class="choice" style="display:flex;gap:10px;align-items:center"><input id="zeToggle" type="checkbox" style="width:auto"> <span><b>Zona de emergencia (ZE)</b><br><small class="muted">Monto referencial: S/ 1 200</small></span></label>
    </div>
   </article>
-  <article class="card"><h2>Ingreso estimado</h2><div class="result"><div class="stat" id="monthly">S/ 6 624</div><span class="muted">al mes (bruto)</span><p style="margin:12px 0 0">En 12 meses: <b id="yearly">S/ 79 488</b></p></div>
-   <p class="notice" style="margin-top:16px">Los importes y bonificaciones provienen del prototipo original y no han sido verificados para 2026-II. Las condiciones varían según institución, plaza y normativa aplicable. No uses este cálculo para comparar ofertas ni como promesa de pago; confirma el monto en el anexo oficial de la plaza.</p>
+  <article class="card"><h2>Ingreso estimado</h2><div class="result">
+   <div id="salaryBreakdown" style="display:grid;gap:7px;font-size:14px;margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;gap:12px"><span>Sueldo base</span><b id="baseAmount">S/ 6 624</b></div>
+    <div style="display:flex;justify-content:space-between;gap:12px"><span>Bono ZAF</span><b id="zafAmount">S/ 0</b></div>
+    <div style="display:flex;justify-content:space-between;gap:12px"><span>Bono ZE</span><b id="zeAmount">S/ 0</b></div>
+    <div style="border-top:1px solid var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:12px"><b>Total mensual estimado</b><b class="stat" id="monthly" style="font-size:30px">S/ 6 624</b></div>
+   </div>
+   <span class="muted">Monto bruto referencial</span><p style="margin:12px 0 0">En 12 meses: <b id="yearly">S/ 79 488</b></p></div>
+   <p class="notice" style="margin-top:16px">Base referencial 2026-I: Medicina S/ 6 624 y otras profesiones S/ 5 300. Los bonos ZAF (S/ 1 480 médicos / S/ 1 100 otras profesiones) y ZE (S/ 1 200) son valores de referencia publicados en fuentes secundarias, no importes confirmados en el anexo 2026-II. El pago depende del régimen e institución ofertante y de la vigencia normativa. Verifica el monto con Recursos Humanos antes de tomar una decisión.</p>
+   <p class="hint">No incluye guardias, escolaridad, aguinaldos ni gastos de instalación. Tampoco descuenta aportes u otros conceptos.</p>
   </article>
  </div>
 </section>
@@ -169,11 +178,28 @@ function drawDetail(){
 }
 function pick(name){selected=name;drawMap();drawRegions();drawDetail();renderMapRegionReviews()}
 document.getElementById("careerBars").innerHTML=careers.map(c=>'<div class="progress-row"><span>'+c[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(c[1]/careers[0][1]*100,1.5)+'%"></div></div><b>'+fmt(c[1])+'</b></div>').join("");
-let base=6624,zone="none";
-const bonus={med:{none:0,far:1850,emer:1200},other:{none:0,far:1350,emer:1200}};
-function calc(){const kind=base===6624?"med":"other",total=base+bonus[kind][zone];document.getElementById("monthly").textContent="S/ "+fmt(total);document.getElementById("yearly").textContent="S/ "+fmt(total*12)}
-document.querySelectorAll("#careerChoice button").forEach(b=>b.onclick=()=>{base=Number(b.dataset.base);document.querySelectorAll("#careerChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
-document.querySelectorAll("#zoneChoice button").forEach(b=>b.onclick=()=>{zone=b.dataset.zone;document.querySelectorAll("#zoneChoice button").forEach(x=>x.classList.toggle("active",x===b));calc()});
+let base=6624;
+const BONUS_ZAF={med:1480,other:1100},BONUS_ZE=1200;
+function calc(){
+ const kind=base===6624?"med":"other";
+ const zaf=document.getElementById("zafToggle").checked?BONUS_ZAF[kind]:0;
+ const ze=document.getElementById("zeToggle").checked?BONUS_ZE:0;
+ const total=base+zaf+ze;
+ document.getElementById("baseAmount").textContent="S/ "+fmt(base);
+ document.getElementById("zafAmount").textContent="S/ "+fmt(zaf);
+ document.getElementById("zeAmount").textContent="S/ "+fmt(ze);
+ document.getElementById("monthly").textContent="S/ "+fmt(total);
+ document.getElementById("yearly").textContent="S/ "+fmt(total*12);
+ document.querySelector("#zafToggle").closest("label").classList.toggle("active",zaf>0);
+ document.querySelector("#zeToggle").closest("label").classList.toggle("active",ze>0);
+}
+document.querySelectorAll("#careerChoice button").forEach(b=>b.onclick=()=>{
+ base=Number(b.dataset.base);
+ document.querySelectorAll("#careerChoice button").forEach(x=>x.classList.toggle("active",x===b));
+ calc();
+});
+document.getElementById("zafToggle").onchange=calc;
+document.getElementById("zeToggle").onchange=calc;
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!=="panel-"+b.dataset.tab);const reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;window.scrollTo({top:0,behavior:reduceMotion?"auto":"smooth"})});
 document.getElementById("themeBtn").onclick=()=>{const root=document.documentElement;const dark=root.dataset.theme!=="dark";root.dataset.theme=dark?"dark":"light";document.getElementById("themeBtn").textContent=dark?"☀":"☾"};
 document.getElementById("rRegion").innerHTML+=[...allRegions].map(r=>'<option>'+r+'</option>').join("");

@@ -42,21 +42,15 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  event.respondWith(
-    caches.match(request).then(cached => {
-      const networkUpdate = fetch(request)
-        .then(response => {
-          if (!response.ok) return response;
-          const copy = response.clone();
-          return caches.open(CACHE_NAME)
-            .then(cache => cache.put(request, copy))
-            .then(() => response);
-        })
-        .catch(error => {
-          if (cached) return cached;
-          throw error;
-        });
-      return cached || networkUpdate;
-    })
-  );
+  const cachedResponse = caches.match(request);
+  const networkUpdate = fetch(request).then(response => {
+    if (!response.ok) return response;
+    const copy = response.clone();
+    return caches.open(CACHE_NAME)
+      .then(cache => cache.put(request, copy))
+      .catch(() => {})
+      .then(() => response);
+  });
+  event.waitUntil(networkUpdate.then(() => undefined).catch(() => undefined));
+  event.respondWith(cachedResponse.then(cached => cached || networkUpdate));
 });

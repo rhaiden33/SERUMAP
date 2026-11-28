@@ -221,12 +221,12 @@ function loadReviews(){
 function renderReviews(){
  const items=loadReviews(),target=document.getElementById("reviewList"),filter=document.getElementById("reviewFilter")?.value||"";
  const visible=filter?items.filter(r=>r.region===filter):items;
- target.innerHTML=visible.length?visible.slice().reverse().map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="muted">'+escapeHtml(r.region)+(r.cat?' · '+escapeHtml(r.cat):'')+'</div><div class="stars">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">No hay reseñas para esta región todavía.</p>';
+ target.innerHTML=visible.length?visible.slice().reverse().map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="muted">'+escapeHtml(r.region)+(r.cat?' · '+escapeHtml(r.cat):'')+'</div><div class="stars" role="img" aria-label="Calificación en estrellas">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">No hay reseñas para esta región todavía.</p>';
 }
 function renderMapRegionReviews(){
  const target=document.getElementById("mapRegionReviews");if(!target)return;
  const items=loadReviews().filter(r=>r.region===selected);
- target.innerHTML=items.length?items.slice().reverse().slice(0,3).map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="stars">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">Todavía no hay reseñas de esta región.</p>';
+ target.innerHTML=items.length?items.slice().reverse().slice(0,3).map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="stars" role="img" aria-label="Calificación en estrellas">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">Todavía no hay reseñas de esta región.</p>';
  const button=document.getElementById("mapWriteReview");if(button)button.onclick=()=>openReviewForm(selected);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}

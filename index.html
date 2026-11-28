@@ -22,8 +22,20 @@ h1{font-size:30px;line-height:1;margin:0;letter-spacing:-1px}h2{font-size:20px;m
 .btn.primary{background:var(--teal);border-color:var(--teal);color:white;font-weight:700}.btn:disabled{opacity:.5;cursor:not-allowed}
 .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
 .map-wrap{background:var(--soft);border-radius:14px;padding:10px}.map-wrap svg{display:block;width:100%;max-height:470px}
-.sea{fill:transparent}.region-shape{fill:#fff;stroke:#99b1bb;stroke-width:1.6;stroke-linejoin:round;cursor:pointer;vector-effect:non-scaling-stroke}.region-shape:hover{filter:brightness(.97)}.region-shape.active{fill:var(--soft);stroke:var(--gold);stroke-width:3}.region-shape:focus{outline:none;stroke:#b97a12;stroke-width:3}
-.region-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip{border:1px solid var(--line);border-radius:999px;background:var(--card);padding:7px 11px;font-size:13px}.chip.active{background:var(--teal);color:white;border-color:var(--teal)}
+.sea{fill:transparent}
+.region-shape{fill:#fff;stroke:#99b1bb;stroke-width:1.6;stroke-linejoin:round;cursor:pointer;vector-effect:non-scaling-stroke}
+.region-shape.zone-none{fill:#36a66a;stroke:#27784a}
+.region-shape.zone-far{fill:#9aa0a6;stroke:#69727a}
+.region-shape.zone-emer{fill:#dc5148;stroke:#a92e29}
+.region-shape.zone-both{fill:#8b5cf6;stroke:#6d28d9}
+.region-shape:hover{filter:brightness(.94)}
+.region-shape.active{stroke:var(--gold);stroke-width:3}
+.region-shape:focus{outline:none;stroke:#b97a12;stroke-width:3}
+.map-legend{display:flex;flex-wrap:wrap;gap:10px 14px;margin:12px 2px 4px;font-size:12px;color:var(--muted)}
+.map-legend span{display:inline-flex;align-items:center;gap:6px}
+.legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.legend-dot.zone-none{background:#36a66a}.legend-dot.zone-far{background:#9aa0a6}.legend-dot.zone-emer{background:#dc5148}.legend-dot.zone-both{background:#8b5cf6}
+.region-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip{border:1px solid var(--line);border-radius:999px;background:var(--card);padding:7px 11px;font-size:13px}.chip.zone-none{border-bottom:3px solid #36a66a}.chip.zone-far{border-bottom:3px solid #9aa0a6}.chip.zone-emer{border-bottom:3px solid #dc5148}.chip.zone-both{border-bottom:3px solid #8b5cf6}.chip.active{background:var(--teal);color:white;border-color:var(--teal)}
 .stat{font-size:42px;font-weight:800;letter-spacing:-2px;line-height:1.1}.stat small{font-size:14px;letter-spacing:0;font-weight:500;color:var(--muted)}
 .progress-row{display:grid;grid-template-columns: minmax(105px,1fr) 2fr 58px;gap:10px;align-items:center;margin:11px 0;font-size:13px}.process-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.process-row span{min-width:0}.process-row small{display:block;color:var(--muted);font-size:11px}.process-row strong{font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .track{height:11px;background:var(--soft);border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--teal);border-radius:20px}
@@ -48,7 +60,8 @@ input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);borde
 
 footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.bubble:focus-visible{stroke:var(--gold);stroke-width:4;outline:none}\na{color:var(--teal);text-underline-offset:3px}
+.region-shape:focus-visible{stroke:var(--gold);stroke-width:4;outline:none}
+a{color:var(--teal);text-underline-offset:3px}
 @media(max-width:760px){.shell{padding:16px 13px 95px}.grid{grid-template-columns:1fr}.card{padding:15px}h1{font-size:27px}.stat{font-size:38px}.header-actions .pill{display:none}}
 @media(prefers-reduced-motion:no-preference){button,.card{transition:background .15s,border-color .15s,transform .15s}button:active{transform:scale(.98)}}
 </style>
@@ -69,8 +82,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 <section class="panel" id="panel-mapa">
  <div class="grid">
   <article class="card"><h2>Explora las regiones</h2><p class="sub">Selecciona una región para consultar sus plazas y sus reseñas.</p>
-   <div class="map-wrap"><svg id="map" viewBox="0 0 901 936" role="group" aria-label="Mapa regional del Perú. Cada región se puede seleccionar con clic o teclado."></svg></div>
-   <div class="region-list" id="regionChips"></div><p class="hint">Selecciona una región con clic o con Tab y Enter/Espacio para consultar sus datos y reseñas. El borde dorado indica la selección.</p>
+   <div class="map-wrap"><svg id="map" viewBox="0 0 901 936" role="group" aria-label="Mapa regional del Perú. Selecciona una región para asignarle una clasificación manual."></svg></div>
+   <div class="map-legend" role="list" aria-label="Leyenda de clasificación manual">
+    <span role="listitem"><i class="legend-dot zone-none" aria-hidden="true"></i>Sin bonificación</span>
+    <span role="listitem"><i class="legend-dot zone-far" aria-hidden="true"></i>Zona alejada / frontera (ZAF)</span>
+    <span role="listitem"><i class="legend-dot zone-emer" aria-hidden="true"></i>Zona de emergencia (ZE)</span>
+    <span role="listitem"><i class="legend-dot zone-both" aria-hidden="true"></i>ZAF + ZE</span>
+   </div>
+   <div class="region-list" id="regionChips"></div><p class="hint">Elige los bonos ZAF y/o ZE en la sección Ingreso y luego haz clic en una región para asignarle el color. Es una anotación manual: una región puede contener establecimientos con distintas condiciones y el color no sustituye la verificación de cada plaza.</p>
   </article>
   <article class="card" id="regionDetail" aria-live="polite"></article>
  </div>
@@ -144,13 +163,41 @@ const regionShapes=[["Loreto","M442 57 L430 62 423 60 428 63 429 69 438 77 436 8
 const fmt=n=>Math.round(n).toLocaleString("es-PE").replace(/,/g," ");
 const xy=(lon,lat)=>[(lon+82)*22,-lat*22+4];
 let selected="Cajamarca";
+const zoneStorageKey="serumap-region-zones-v1";
+const zoneLabels={none:"Sin bonificación",far:"Zona alejada o de frontera (ZAF)",emer:"Zona de emergencia (ZE)",both:"ZAF + ZE"};
+function loadRegionZones(){
+ const clean=Object.fromEntries(allRegions.map(name=>[name,"none"]));
+ try{
+  const saved=JSON.parse(localStorage.getItem(zoneStorageKey)||"{}");
+  if(saved&&typeof saved==="object"&&!Array.isArray(saved)){
+   allRegions.forEach(name=>{if(["none","far","emer","both"].includes(saved[name]))clean[name]=saved[name]});
+  }
+ }catch{}
+ return clean;
+}
+let regionZones=loadRegionZones();
+function saveRegionZones(){try{localStorage.setItem(zoneStorageKey,JSON.stringify(regionZones))}catch{}}
+function currentRegionZone(){
+ const zaf=document.getElementById("zafToggle").checked;
+ const ze=document.getElementById("zeToggle").checked;
+ if(zaf&&ze)return "both";
+ if(zaf)return "far";
+ if(ze)return "emer";
+ return "none";
+}
 function drawMap(){
- const svg='<rect class="sea" width="901" height="936"/>'+regionShapes.map(s=>'<path class="region-shape '+(s[0]===selected?'active':'')+'" d="'+s[1]+'" data-region="'+s[0]+'" tabindex="0" role="button" aria-pressed="'+(s[0]===selected)+'" aria-label="Seleccionar '+s[0]+'"/>').join('');
+ const svg='<rect class="sea" width="901" height="936"/>'+regionShapes.map(s=>{
+  const zone=regionZones[s[0]]||"none";
+  return '<path class="region-shape zone-'+zone+' '+(s[0]===selected?'active':'')+'" d="'+s[1]+'" data-region="'+s[0]+'" data-zone="'+zone+'" tabindex="0" role="button" aria-pressed="'+(s[0]===selected)+'" aria-label="'+s[0]+': '+zoneLabels[zone]+'; seleccionar región"/>';
+ }).join('');
  const map=document.getElementById("map");map.setAttribute("viewBox","0 0 901 936");map.setAttribute("preserveAspectRatio","xMidYMid meet");map.innerHTML=svg;
  map.querySelectorAll(".region-shape").forEach(el=>{el.addEventListener("click",()=>pick(el.dataset.region));el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(el.dataset.region)}})});
 }
 function drawRegions(){
- document.getElementById("regionChips").innerHTML=regions.map(r=>'<button class="chip '+(r[0]===selected?'active':'')+'" data-region="'+r[0]+'" aria-pressed="'+(r[0]===selected)+'">'+r[0]+'</button>').join("");
+ document.getElementById("regionChips").innerHTML=regions.map(r=>{
+  const zone=regionZones[r[0]]||"none";
+  return '<button class="chip zone-'+zone+' '+(r[0]===selected?'active':'')+'" data-region="'+r[0]+'" aria-pressed="'+(r[0]===selected)+'" aria-label="'+r[0]+': '+zoneLabels[zone]+'">'+r[0]+'</button>';
+ }).join("");
  document.querySelectorAll("#regionChips button").forEach(b=>b.onclick=()=>pick(b.dataset.region));
 }
 function drawDetail(){
@@ -167,16 +214,18 @@ function drawDetail(){
   </div>
   <p class="hint">Estos cuatro registros son una muestra ilustrativa, no el total de plazas ni de establecimientos de Cusco. Una misma región puede contener las cuatro categorías.</p>
   <div class="serums-list">
-   <div class="serums-item"><span class="zone-dot no-bonus"></span><div><b>HUARAN</b><small>Calca · Medicina humana</small></div><strong>Sin bono</strong></div>
-   <div class="serums-item"><span class="zone-dot zaf"></span><div><b>QUESQUENTO</b><small>Calca · Obstetricia</small></div><strong>ZAF</strong></div>
-   <div class="serums-item"><span class="zone-dot ze"></span><div><b>OMAYA</b><small>Pichari · Medicina humana</small></div><strong>ZE</strong></div>
-   <div class="serums-item"><span class="zone-dot both"></span><div><b>NUEVO MUNDO</b><small>Megantoni · Medicina humana</small></div><strong>ZAF + ZE</strong></div>
+   <div class="serums-item"><span class="zone-dot no-bonus"></span><div><b>HUARAN</b><small>Calca (distrito y provincia) · Medicina humana</small></div><strong>Sin bono</strong></div>
+   <div class="serums-item"><span class="zone-dot zaf"></span><div><b>QUESQUENTO</b><small>Calca · Yanatile · Obstetricia</small></div><strong>ZAF</strong></div>
+   <div class="serums-item"><span class="zone-dot ze"></span><div><b>OMAYA</b><small>La Convención · Pichari · Medicina humana</small></div><strong>ZE</strong></div>
+   <div class="serums-item"><span class="zone-dot both"></span><div><b>NUEVO MUNDO</b><small>La Convención · Megantoni · Medicina humana</small></div><strong>ZAF + ZE</strong></div>
   </div>
-  <p class="hint">ZAF = zona alejada o de frontera · ZE = zona de emergencia. Verifica los indicadores y el establecimiento en el anexo oficial antes de postular.</p>
+  <p class="hint">ZAF = zona alejada o de frontera · ZE = zona de emergencia. Fuente: oferta remunerada SERUMS 2026-II de GERESA Loreto, pp. 10, 70 y 93. <a href="https://mail.geresaloreto.gob.pe/PanelAdministrativo/uploads/serums/serums_uid4_20260819173210_148dba97aa.pdf" target="_blank" rel="noopener noreferrer">Consultar anexo oficial</a>. La muestra no representa el total regional.</p>
  </section>` : "";
+ const currentZone=regionZones[selected]||"none";
+ const zoneStatus='<p class="hint"><b>Clasificación manual del mapa:</b> '+zoneLabels[currentZone]+'. No es una clasificación oficial de toda la región.</p>';
  document.getElementById("regionDetail").innerHTML='<h2>'+r[0]+'</h2>'+plazaInfo+cuscoSample+'<div style="border-top:1px solid var(--line);margin-top:16px;padding-top:14px"><h3>Reseñas de '+r[0]+'</h3><p class="muted" style="font-size:13px">Experiencias compartidas para esta región.</p><div id="mapRegionReviews"></div><button class="btn primary" id="mapWriteReview" style="margin-top:10px">Escribir reseña de '+r[0]+'</button></div>';
 }
-function pick(name){selected=name;drawMap();drawRegions();drawDetail();renderMapRegionReviews()}
+function pick(name){if(!allRegions.includes(name))return;selected=name;regionZones[name]=currentRegionZone();saveRegionZones();drawMap();drawRegions();drawDetail();renderMapRegionReviews()}
 document.getElementById("careerBars").innerHTML=careers.map(c=>'<div class="progress-row"><span>'+c[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(c[1]/careers[0][1]*100,1.5)+'%"></div></div><b>'+fmt(c[1])+'</b></div>').join("");
 let base=6624;
 const BONUS_ZAF={med:1480,other:1100},BONUS_ZE=1200;
@@ -221,12 +270,12 @@ function loadReviews(){
 function renderReviews(){
  const items=loadReviews(),target=document.getElementById("reviewList"),filter=document.getElementById("reviewFilter")?.value||"";
  const visible=filter?items.filter(r=>r.region===filter):items;
- target.innerHTML=visible.length?visible.slice().reverse().map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="muted">'+escapeHtml(r.region)+(r.cat?' · '+escapeHtml(r.cat):'')+'</div><div class="stars" role="img" aria-label="Calificación en estrellas">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">No hay reseñas para esta región todavía.</p>';
+ target.innerHTML=visible.length?visible.slice().reverse().map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="muted">'+escapeHtml(r.region)+(r.cat?' · '+escapeHtml(r.cat):'')+'</div><div class="stars" role="img" aria-label="Calificación: '+r.rating+' de 5 estrellas">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">No hay reseñas para esta región todavía.</p>';
 }
 function renderMapRegionReviews(){
  const target=document.getElementById("mapRegionReviews");if(!target)return;
  const items=loadReviews().filter(r=>r.region===selected);
- target.innerHTML=items.length?items.slice().reverse().slice(0,3).map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="stars" role="img" aria-label="Calificación en estrellas">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">Todavía no hay reseñas de esta región.</p>';
+ target.innerHTML=items.length?items.slice().reverse().slice(0,3).map(r=>'<div class="review"><b>'+escapeHtml(r.name)+'</b><div class="stars" role="img" aria-label="Calificación: '+r.rating+' de 5 estrellas">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</div><p>'+escapeHtml(r.text||"Sin comentario.")+'</p><small class="muted">'+new Date(r.date).toLocaleDateString("es-PE")+'</small></div>').join(""):'<p class="muted">Todavía no hay reseñas de esta región.</p>';
  const button=document.getElementById("mapWriteReview");if(button)button.onclick=()=>openReviewForm(selected);
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}

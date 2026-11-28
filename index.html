@@ -88,16 +88,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 </section>
 <section class="panel" id="panel-ingreso" hidden>
  <div class="grid">
-  <article class="card"><h2>Calculadora de ingreso</h2><p class="sub">Selecciona carrera y tipo de zona.</p>
+  <article class="card"><h2>Calculadora de ingreso</h2><p class="sub">Selecciona carrera y bonos. Los importes del prototipo no están confirmados para 2026-II.</p>
    <h3 style="margin-top:18px">Carrera</h3><div class="two" id="careerChoice">
-    <button class="choice active" data-base="6624">Medicina humana<br><b>S/ 6 624 base</b></button>
-    <button class="choice" data-base="5300">Otras carreras<br><b>S/ 5 300 base</b></button>
+    <button class="choice active" data-base="6624">Medicina humana<br><b>S/ 6 624 (prototipo)</b></button>
+    <button class="choice" data-base="5300">Otras carreras<br><b>S/ 5 300 (prototipo)</b></button>
    </div>
    <h3 style="margin-top:18px">Bonificaciones de la plaza</h3>
    <p class="hint">Marca los bonos que figuran en el registro oficial del establecimiento (ZAF y/o ZE).</p>
    <div id="zoneChoice" style="display:grid;gap:8px">
-    <label class="choice active" style="display:flex;gap:10px;align-items:center"><input id="zafToggle" type="checkbox" style="width:auto"> <span><b>Zona alejada o de frontera (ZAF)</b><br><small class="muted">Monto referencial: S/ 1 480 médicos · S/ 1 100 otras profesiones</small></span></label>
-    <label class="choice" style="display:flex;gap:10px;align-items:center"><input id="zeToggle" type="checkbox" style="width:auto"> <span><b>Zona de emergencia (ZE)</b><br><small class="muted">Monto referencial: S/ 1 200</small></span></label>
+    <label class="choice active" style="display:flex;gap:10px;align-items:center"><input id="zafToggle" type="checkbox" style="width:auto"> <span><b>Zona alejada o de frontera (ZAF)</b><br><small class="muted">Importe no verificado: S/ 1 480 médicos · S/ 1 100 otras profesiones</small></span></label>
+    <label class="choice" style="display:flex;gap:10px;align-items:center"><input id="zeToggle" type="checkbox" style="width:auto"> <span><b>Zona de emergencia (ZE)</b><br><small class="muted">Importe no verificado: S/ 1 200</small></span></label>
    </div>
   </article>
   <article class="card"><h2>Ingreso estimado</h2><div class="result">
@@ -107,8 +107,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <div style="display:flex;justify-content:space-between;gap:12px"><span>Bono ZE</span><b id="zeAmount">S/ 0</b></div>
     <div style="border-top:1px solid var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:12px"><b>Total mensual estimado</b><b class="stat" id="monthly" style="font-size:30px">S/ 6 624</b></div>
    </div>
-   <span class="muted">Monto bruto referencial</span><p style="margin:12px 0 0">En 12 meses: <b id="yearly">S/ 79 488</b></p></div>
-   <p class="notice" style="margin-top:16px">Base referencial 2026-I: Medicina S/ 6 624 y otras profesiones S/ 5 300. Los bonos ZAF (S/ 1 480 médicos / S/ 1 100 otras profesiones) y ZE (S/ 1 200) son valores de referencia publicados en fuentes secundarias, no importes confirmados en el anexo 2026-II. El pago depende del régimen e institución ofertante y de la vigencia normativa. Verifica el monto con Recursos Humanos antes de tomar una decisión.</p>
+   <span class="muted">Monto bruto referencial</span><p style="margin:12px 0 0">Proyección simple (mensual × 12): <b id="yearly">S/ 79 488</b></p></div>
+   <p class="notice" style="margin-top:16px">Los importes de esta calculadora se conservaron del prototipo y no están confirmados como pago SERUMS 2026-II: base de S/ 6 624 para Medicina y S/ 5 300 para otras carreras; ZAF de S/ 1 480 / S/ 1 100 y ZE de S/ 1 200. El anexo 2026-II identifica si cada establecimiento tiene ZAF y/o ZE, pero esas columnas no indican el monto del bono. No uses el resultado como promesa de remuneración; confirma el pago con la institución ofertante y la normativa vigente.</p><p class="hint">El informe del MEF de junio de 2025 registra para 2025 una valorización principal de nivel I de S/ 6 644 para médicos y S/ 5 320 para profesionales no médicos. Es una referencia general del sector público, no una confirmación del pago SERUMS por plaza. <a href="https://www.mef.gob.pe/contenidos/rec_publicos/documentos/IFESAFSP_2025.pdf" target="_blank" rel="noopener noreferrer">Consultar informe del MEF</a>.</p>
    <p class="hint">No incluye guardias, escolaridad, aguinaldos ni gastos de instalación. Tampoco descuenta aportes u otros conceptos.</p>
   </article>
  </div>
